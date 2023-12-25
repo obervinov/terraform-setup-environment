@@ -1,0 +1,16 @@
+---
+name: Check terraform code
+
+on:
+  push:
+    branches:
+      - '*'
+      - '*/*'
+      - '**'
+
+env:
+  TF_EXTRA_ARGS: '-var="username=test-gh" -var="packages_list=[\"git\"]" -var="remote_commands=[\"echo test-gh\"]" -var="public_key_name=test-gh" -var="digitalocean_token=123" -var="droplet_size=s-1vcpu-1gb" -var="droplet_size=s-1vcpu-1gb" -var="droplet_tags=[\"ubuntu\"]" -var="droplet_project_name=test-gh"'
+
+jobs:
+  terraform-check:
+    uses: obervinov/_templates/.github/workflows/verify.terraform.yml@release/v1.0.5

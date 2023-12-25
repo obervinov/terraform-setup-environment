@@ -1,0 +1,10 @@
+---
+name: Create GitHub Release
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  create-release:
+    uses: obervinov/_templates/.github/workflows/create.release.yml@release/v1.0.5
