@@ -34,9 +34,7 @@ users:
     ssh_authorized_keys:
       - ${data.digitalocean_ssh_key.remote_provisioner.public_key}
 
-packages:
-  - mc
-${var.os_packages != null ? join("\n", formatlist("  - '%s'", var.os_packages)) : ""}
+${var.os_packages != null && length(var.os_packages) > 0 ? "packages:\n" : ""}${var.os_packages != null ? join("\n", formatlist("  - '%s'", var.os_packages)) : ""}
 
 runcmd:
 ${local.default_commands != null ? join("\n", formatlist("  - '%s'", local.default_commands)) : ""}
