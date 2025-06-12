@@ -1,3 +1,5 @@
+# Disabled CloudInit APT update and upgrade to avoid error
+# "Failed to update package using apt: Unexpected error while running command. Command: ['eatmydata', 'apt-get', '--option=Dpkg::Options::=--force-confold', '--option=Dpkg::options::=--force-unsafe-io', '--assume-yes', '--quiet', 'update'] Exit code: 100 Reason: - Stdout: - Stderr: -"
 locals {
   remote_provisioner_host = var.droplet_provisioner_external_ip ? digitalocean_droplet.this.ipv4_address : digitalocean_droplet.this.ipv4_address_private
   default_environment_variables = [
@@ -5,6 +7,7 @@ locals {
     "DROPLET_EXTERNAL_IP=${digitalocean_droplet.this.ipv4_address}",
   ]
   default_commands = [
+    "sudo DEBIAN_FRONTEND=noninteractive apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y",
     "sudo mkdir -p ${var.app_data}/${var.app_configurations}",
     "sudo chown ${var.droplet_user}:terraform ${var.app_data}/${var.app_configurations}",
     "sudo chmod 775 ${var.app_data}/${var.app_configurations}",
@@ -14,8 +17,8 @@ locals {
 
 ssh_pwauth: false
 disable_root: true
-package_update: true
-package_upgrade: true
+package_update: false
+package_upgrade: false
 manage_etc_hosts: true
 
 users:
