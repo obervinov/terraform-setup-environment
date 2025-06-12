@@ -35,6 +35,7 @@ users:
       - ${data.digitalocean_ssh_key.remote_provisioner.public_key}
 
 packages:
+  - mc
 ${var.os_packages != null ? join("\n", formatlist("  - '%s'", var.os_packages)) : ""}
 
 runcmd:
