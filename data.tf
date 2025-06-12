@@ -4,11 +4,6 @@ locals {
     "DROPLET_INTERNAL_IP=${digitalocean_droplet.this.ipv4_address_private}",
     "DROPLET_EXTERNAL_IP=${digitalocean_droplet.this.ipv4_address}",
   ]
-  default_packages = [
-    "curl",
-    "mc",
-    "net-tools"
-  ]
   default_commands = [
     "sudo mkdir -p ${var.app_data}/${var.app_configurations}",
     "sudo chown ${var.droplet_user}:terraform ${var.app_data}/${var.app_configurations}",
@@ -29,18 +24,17 @@ users:
       - sudo
     sudo:
       - ALL=(ALL) NOPASSWD:ALL
-    ssh-authorized-keys:
+    ssh_authorized_keys:
       - ${data.digitalocean_ssh_key.user.public_key}
   - name: terraform
     groups:
       - sudo
     sudo:
       - ALL=(ALL) NOPASSWD:ALL
-    ssh-authorized-keys:
+    ssh_authorized_keys:
       - ${data.digitalocean_ssh_key.remote_provisioner.public_key}
 
 packages:
-${local.default_packages != null ? join("\n", formatlist("  - '%s'", local.default_packages)) : ""}
 ${var.os_packages != null ? join("\n", formatlist("  - '%s'", var.os_packages)) : ""}
 
 runcmd:

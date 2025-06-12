@@ -9,9 +9,9 @@ variable "droplet_name" {
 }
 
 variable "droplet_image" {
-  description = "The image of the droplet (must be available in the region). Default: ubuntu-1vcpu-512mb.rev1"
+  description = "The image of the droplet (must be available in the region). Default: ubuntu-24-04.rev1"
   type        = string
-  default     = "ubuntu-1vcpu-512mb.rev1"
+  default     = "ubuntu-24-04.rev1"
 }
 
 variable "droplet_region" {

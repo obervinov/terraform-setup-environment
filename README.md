@@ -15,7 +15,7 @@ locals {
 
 module "proxy_server" {
   source  = "app.terraform.io/<ORG_NAME>/environment/setup"
-  version = "1.0.0"
+  version = "2.0.0"
 
   droplet_image               = "ubuntu-1vcpu-512mb"
   droplet_size                = "s-1vcpu-512mb-10gb"
@@ -37,7 +37,7 @@ All files in the `configurations` directory will be copied to the `/opt/configur
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.11 |
 | <a name="requirement_digitalocean"></a> [digitalocean](#requirement\_digitalocean) | >= 2 |
 
 ## Providers
@@ -89,7 +89,7 @@ No modules.
 | <a name="input_droplet_dns_zone"></a> [droplet\_dns\_zone](#input\_droplet\_dns\_zone) | Name of the domain zone to create an external dns record for this droplet | `string` | n/a | yes |
 | <a name="input_droplet_do_agent"></a> [droplet\_do\_agent](#input\_droplet\_do\_agent) | Enable DigitalOcean agent for droplet (for monitoring and backups) | `bool` | `true` | no |
 | <a name="input_droplet_do_monitoring"></a> [droplet\_do\_monitoring](#input\_droplet\_do\_monitoring) | Enable monitoring for droplet (for graphs and alerts) | `bool` | `true` | no |
-| <a name="input_droplet_image"></a> [droplet\_image](#input\_droplet\_image) | The image of the droplet (must be available in the region). Default: ubuntu-1vcpu-512mb.rev1 | `string` | `"ubuntu-1vcpu-512mb.rev1"` | no |
+| <a name="input_droplet_image"></a> [droplet\_image](#input\_droplet\_image) | The image of the droplet (must be available in the region). Default: ubuntu-24-04.rev1 | `string` | `"ubuntu-24-04.rev1"` | no |
 | <a name="input_droplet_name"></a> [droplet\_name](#input\_droplet\_name) | The name of the droplet (must be unique) | `string` | n/a | yes |
 | <a name="input_droplet_project"></a> [droplet\_project](#input\_droplet\_project) | The target project for the droplet | `string` | n/a | yes |
 | <a name="input_droplet_provisioner_external_ip"></a> [droplet\_provisioner\_external\_ip](#input\_droplet\_provisioner\_external\_ip) | External IP for provisioner connection to droplet | `bool` | `false` | no |
