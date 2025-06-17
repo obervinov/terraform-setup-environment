@@ -1,38 +1,3 @@
-# Terraform Setup Environment
-This module creates a droplet in DigitalOcean with the specified configurations and for the specified role.
-
-## Usage
-Module example:
-```hcl
-locals {
-  os_environment_variables = [
-    "HAPROXY_VERSION=2.6.2"
-  ]
-  os_commands = [
-    "sudo docker compose -f /opt/configurations/docker-compose.yml up -d --force-recreate --remove-orphans"
-  ]
-}
-
-module "proxy_server" {
-  source  = "github.com/obervinov/terraform-setup-environment?ref=v2.0.0"
-  version = "2.0.0"
-
-  droplet_image               = "ubuntu-1vcpu-512mb"
-  droplet_size                = "s-1vcpu-512mb-10gb"
-  droplet_user                = "ubuntu"
-  droplet_provisioner_ssh_key = "remote-provisioner-ssh-key-name"
-  droplet_name                = "proxy-server"
-  droplet_tags                = ["ubuntu", "proxy"]
-  droplet_project             = "project-name"
-  droplet_dns_zone            = "example.com"
-  droplet_reserved_ip         = true
-  os_environment_variables    = local.os_environment_variables
-  os_commands                 = local.os_commands
-  os_swap_size                = "2"
-}
-```
-All files in the `configurations` directory will be copied to the `/opt/configurations` directory on the created server.
-
 ## Requirements
 
 | Name | Version |
@@ -90,7 +55,7 @@ No modules.
 | <a name="input_app_cname_records"></a> [app\_cname\_records](#input\_app\_cname\_records) | List with CNAME records for droplet | `list(string)` | `[]` | no |
 | <a name="input_app_configurations"></a> [app\_configurations](#input\_app\_configurations) | The path to the directories with configurations that will be copied to the created server | `string` | `"configurations/"` | no |
 | <a name="input_app_data"></a> [app\_data](#input\_app\_data) | The path to the directory for storing persistent information and configurations | `string` | `"/opt"` | no |
-| <a name="input_cloudflare_dns_settings"></a> [cloudflare\_dns\_settings](#input\_cloudflare\_dns\_settings) | Settings for all Cloudflare DNS records. Required if `dns_provider` is set to 'cloudflare'. | `map(any)` | <pre>{<br>  "ipv4_only": true,<br>  "ipv6_only": false,<br>  "proxied": true,<br>  "ttl": 3600<br>}</pre> | no |
+| <a name="input_cloudflare_dns_settings"></a> [cloudflare\_dns\_settings](#input\_cloudflare\_dns\_settings) | Settings for all Cloudflare DNS records. Required if `dns_provider` is set to 'cloudflare'. | <pre>map({<br>    proxied   = bool<br>    ipv4_only = bool<br>    ipv6_only = bool<br>    ttl       = number<br>  })</pre> | <pre>{<br>  "ipv4_only": true,<br>  "ipv6_only": false,<br>  "proxied": true,<br>  "ttl": 3600<br>}</pre> | no |
 | <a name="input_dns_provider"></a> [dns\_provider](#input\_dns\_provider) | DNS provider to manage records for the droplet. Supported: 'digitalocean', 'cloudflare'. Default: 'digitalocean' | `string` | `"digitalocean"` | no |
 | <a name="input_droplet_backups"></a> [droplet\_backups](#input\_droplet\_backups) | Enable backups for droplet | `bool` | `false` | no |
 | <a name="input_droplet_dns_record"></a> [droplet\_dns\_record](#input\_droplet\_dns\_record) | Create an external dns record for this droplet in `droplet_dns_zone` | `bool` | `true` | no |
