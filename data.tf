@@ -72,12 +72,10 @@ data "digitalocean_droplet_snapshot" "this" {
 
 data "cloudflare_zones" "this" {
   count = var.droplet_dns_record && var.dns_provider == "cloudflare" ? 1 : 0
-
-  name = var.droplet_dns_zone
+  name  = var.droplet_dns_zone
 }
 
 data "cloudflare_zone" "this" {
-  depends_on = [data.cloudflare_zones.this]
-
-  zone_id = data.cloudflare_zones.this.result[0].id
+  count   = data.cloudflare_zones.this.count
+  zone_id = data.cloudflare_zones.this[count.index].result[0].id
 }
