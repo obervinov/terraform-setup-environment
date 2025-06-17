@@ -10,7 +10,7 @@ resource "digitalocean_record" "this" {
 resource "digitalocean_record" "additional" {
   depends_on = [digitalocean_record.this]
 
-  for_each = length(var.app_cname_records) > 0 ? toset(var.app_cname_records) : toset([])
+  for_each = length(var.app_cname_records) > 0 && var.droplet_dns_record && var.dns_provider == "digitalocean" ? toset(var.app_cname_records) : toset([])
 
   domain = element(data.digitalocean_domain.this.*.id, 0)
   type   = "CNAME"
@@ -21,8 +21,8 @@ resource "digitalocean_record" "additional" {
 resource "cloudflare_dns_record" "this" {
   count = var.droplet_dns_record && var.dns_provider == "cloudflare" ? 1 : 0
 
-  zone_id = data.cloudflare_zone.this.zone_id
-  name    = "${var.droplet_name}.${data.cloudflare_zone.this.name}"
+  zone_id = data.cloudflare_zone.this[count.index].zone_id                       # <--- ИЗМЕНЕНО
+  name    = "${var.droplet_name}.${data.cloudflare_zone.this[count.index].name}" # <--- ИЗМЕНЕНО
   type    = "A"
   comment = "A record for the DigitalOcean droplet ${var.droplet_name}"
   content = var.droplet_reserved_ip ? digitalocean_reserved_ip.this[0].ip_address : digitalocean_droplet.this.ipv4_address
@@ -38,10 +38,10 @@ resource "cloudflare_dns_record" "this" {
 resource "cloudflare_dns_record" "additional" {
   depends_on = [digitalocean_record.this]
 
-  for_each = length(var.app_cname_records) > 0 ? toset(var.app_cname_records) : toset([])
+  for_each = length(var.app_cname_records) > 0 && var.droplet_dns_record && var.dns_provider == "cloudflare" ? toset(var.app_cname_records) : toset([])
 
-  zone_id = data.cloudflare_zone.this.zone_id
-  name    = "${each.value}.${data.cloudflare_zone.this.name}"
+  zone_id = data.cloudflare_zone.this[0].zone_id
+  name    = "${each.value}.${data.cloudflare_zone.this[0].name}"
   type    = "CNAME"
   comment = "CNAME record for the DigitalOcean droplet ${var.droplet_name}"
   content = length(digitalocean_record.this) > 0 ? "${digitalocean_record.this[0].fqdn}." : null
