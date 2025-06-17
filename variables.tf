@@ -144,7 +144,7 @@ variable "dns_provider" {
 
 variable "cloudflare_dns_settings" {
   description = "Settings for all Cloudflare DNS records. Required if `dns_provider` is set to 'cloudflare'."
-  type = map({
+  type = object({
     proxied   = bool
     ipv4_only = bool
     ipv6_only = bool
