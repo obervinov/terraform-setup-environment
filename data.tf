@@ -76,6 +76,6 @@ data "cloudflare_zones" "this" {
 }
 
 data "cloudflare_zone" "this" {
-  count   = data.cloudflare_zones.this.count
+  count   = length(data.cloudflare_zones.this)
   zone_id = data.cloudflare_zones.this[count.index].result[0].id
 }
