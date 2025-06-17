@@ -135,3 +135,20 @@ variable "app_cname_records" {
   type        = list(string)
   default     = []
 }
+
+variable "dns_provider" {
+  description = "DNS provider to manage records for the droplet. Supported: 'digitalocean', 'cloudflare'. Default: 'digitalocean'"
+  type        = string
+  default     = "digitalocean"
+}
+
+variable "cloudflare_dns_settings" {
+  description = "Settings for all Cloudflare DNS records. Required if `dns_provider` is set to 'cloudflare'."
+  type        = map(any)
+  default = {
+    proxied   = true
+    ipv4_only = true
+    ipv6_only = false
+    ttl       = 3600
+  }
+}

@@ -69,3 +69,15 @@ data "digitalocean_droplet_snapshot" "this" {
   region      = var.droplet_region
   most_recent = true
 }
+
+data "cloudflare_zones" "this" {
+  count = var.droplet_dns_record && var.dns_provider == "cloudflare" ? 1 : 0
+
+  name = var.droplet_dns_zone
+}
+
+data "cloudflare_zone" "this" {
+  depends_on = [data.cloudflare_zones.this]
+
+  zone_id = data.cloudflare_zones.this.result[0].id
+}
