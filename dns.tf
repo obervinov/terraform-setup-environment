@@ -1,7 +1,7 @@
 resource "digitalocean_record" "this" {
   count = var.droplet_dns_record && var.dns_provider == "digitalocean" ? 1 : 0
 
-  domain = var.droplet_dns_record ? element(data.digitalocean_domain.this.*.id, 0) : null
+  domain = var.droplet_dns_record ? data.digitalocean_domain.this[0].id : null
   type   = "A"
   name   = var.droplet_name
   value  = var.droplet_reserved_ip ? digitalocean_reserved_ip.this[0].ip_address : digitalocean_droplet.this.ipv4_address
@@ -12,7 +12,7 @@ resource "digitalocean_record" "additional" {
 
   for_each = length(var.app_cname_records) > 0 && var.droplet_dns_record && var.dns_provider == "digitalocean" ? toset(var.app_cname_records) : toset([])
 
-  domain = element(data.digitalocean_domain.this.*.id, 0)
+  domain = data.digitalocean_domain.this[0].id
   type   = "CNAME"
   name   = each.value
   value  = length(digitalocean_record.this) > 0 ? "${digitalocean_record.this[0].fqdn}." : null

@@ -57,7 +57,8 @@ data "digitalocean_project" "this" {
 }
 
 data "digitalocean_domain" "this" {
-  name = var.droplet_dns_zone
+  count = var.dns_provider == "digitalocean" ? 1 : 0
+  name  = var.droplet_dns_zone
 }
 
 data "digitalocean_vpc" "this" {
