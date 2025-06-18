@@ -83,7 +83,7 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_droplet_dns"></a> [droplet\_dns](#output\_droplet\_dns) | Droplet dns record info |
+| <a name="output_droplet_dns"></a> [droplet\_dns](#output\_droplet\_dns) | Droplet DNS record info for DigitalOcean provider, if applicable. |
 | <a name="output_droplet_info"></a> [droplet\_info](#output\_droplet\_info) | Droplet base info |
 | <a name="output_droplet_networks"></a> [droplet\_networks](#output\_droplet\_networks) | Droplet networks addresses |
 | <a name="output_droplet_user"></a> [droplet\_user](#output\_droplet\_user) | Created user for ssh droplet |
