@@ -35,9 +35,10 @@ data "cloudflare_dns_record" "this" {
 
   count = var.droplet_dns_record && var.dns_provider == "cloudflare" ? 1 : 0
 
-  zone_id = data.cloudflare_zone.this[count.index].zone_id
-  name    = "${var.droplet_name}.${data.cloudflare_zone.this[count.index].name}"
-  type    = "A"
+  dns_record_id = cloudflare_dns_record.this[count.index].id
+  zone_id       = data.cloudflare_zone.this[count.index].zone_id
+  name          = "${var.droplet_name}.${data.cloudflare_zone.this[count.index].name}"
+  type          = "A"
 }
 
 resource "cloudflare_dns_record" "additional" {
