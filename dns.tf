@@ -21,8 +21,8 @@ resource "digitalocean_record" "additional" {
 resource "cloudflare_dns_record" "this" {
   count = var.droplet_dns_record && var.dns_provider == "cloudflare" ? 1 : 0
 
-  zone_id = data.cloudflare_zone.this[count.index].zone_id                       # <--- ИЗМЕНЕНО
-  name    = "${var.droplet_name}.${data.cloudflare_zone.this[count.index].name}" # <--- ИЗМЕНЕНО
+  zone_id = data.cloudflare_zone.this[count.index].zone_id
+  name    = "${var.droplet_name}.${data.cloudflare_zone.this[count.index].name}"
   type    = "A"
   comment = "A record for the DigitalOcean droplet ${var.droplet_name}"
   content = var.droplet_reserved_ip ? digitalocean_reserved_ip.this[0].ip_address : digitalocean_droplet.this.ipv4_address
@@ -32,7 +32,7 @@ resource "cloudflare_dns_record" "this" {
     ipv6_only = var.cloudflare_dns_settings.ipv6_only
   }
   tags = ["digitalocean:droplet", var.droplet_name, "terraform-setup-environment"]
-  ttl  = var.cloudflare_dns_settings.ttl
+  ttl  = var.cloudflare_dns_settings.proxied ? 1 : var.cloudflare_dns_settings.ttl
 }
 
 resource "cloudflare_dns_record" "additional" {
@@ -51,5 +51,5 @@ resource "cloudflare_dns_record" "additional" {
     ipv6_only = var.cloudflare_dns_settings.ipv6_only
   }
   tags = ["digitalocean:droplet", var.droplet_name, "terraform-setup-environment"]
-  ttl  = var.cloudflare_dns_settings.ttl
+  ttl  = var.cloudflare_dns_settings.proxied ? 1 : var.cloudflare_dns_settings.ttl
 }
