@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## v2.0.1 - 2025-06-24
+### What's Changed
+**Full Changelog**: https://github.com/obervinov/terraform-setup-environment/compare/v2.0.0...v2.0.1 by @obervinov
+#### 🐛 Bug Fixes
+* fix `dns_record` output for the Cloudflare DNS provider
+
+
 ## v2.0.0 - 2025-06-24
 ### What's Changed
 **Full Changelog**: https://github.com/obervinov/terraform-setup-environment/compare/v1.1.0...v2.0.0 by @obervinov
