@@ -78,5 +78,5 @@ data "cloudflare_zones" "this" {
 
 data "cloudflare_zone" "this" {
   count   = length(data.cloudflare_zones.this)
-  zone_id = data.cloudflare_zones.this[count.index].result[0].id
+  zone_id = length(data.cloudflare_zones.this[count.index].result) > 0 ? data.cloudflare_zones.this[count.index].result[0].id : null
 }
