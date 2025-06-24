@@ -31,26 +31,6 @@ resource "digitalocean_reserved_ip" "this" {
   region     = digitalocean_droplet.this.region
 }
 
-resource "digitalocean_record" "this" {
-  count = var.droplet_dns_record ? 1 : 0
-
-  domain = var.droplet_dns_record ? element(data.digitalocean_domain.this.*.id, 0) : null
-  type   = "A"
-  name   = var.droplet_name
-  value  = var.droplet_reserved_ip ? digitalocean_reserved_ip.this[0].ip_address : digitalocean_droplet.this.ipv4_address
-}
-
-resource "digitalocean_record" "additional" {
-  depends_on = [digitalocean_record.this]
-
-  for_each = length(var.app_cname_records) > 0 ? toset(var.app_cname_records) : toset([])
-
-  domain = element(data.digitalocean_domain.this.*.id, 0)
-  type   = "CNAME"
-  name   = each.value
-  value  = length(digitalocean_record.this) > 0 ? "${digitalocean_record.this[0].fqdn}." : null
-}
-
 resource "digitalocean_volume" "this" {
   count = var.droplet_volume_size > 0 ? 1 : 0
 

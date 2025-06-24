@@ -24,10 +24,16 @@ output "droplet_user" {
 }
 
 output "droplet_dns" {
-  description = "Droplet dns record info"
+  description = "Droplet DNS record info for DigitalOcean provider, if applicable."
   value = {
-    dns_record    = var.droplet_dns_record ? digitalocean_record.this[0].fqdn : ""
-    cname_records = join(", ", [for item in var.app_cname_records : "${item}.${data.digitalocean_domain.this.name}"])
+    # Determines whether to include DNS record information in the output. This condition
+    # typically depends on whether DNS records are configured for the droplet.
+    dns_record = local.dns_record_condition ? try(digitalocean_record.this[0].fqdn, "") : ""
+    cname_records = (
+      length(var.app_cname_records) > 0 &&
+      local.dns_record_condition &&
+      length(data.digitalocean_domain.this) > 0
+    ) ? join(", ", [for item in var.app_cname_records : "${item}.${data.digitalocean_domain.this[0].name}"]) : ""
   }
 }
 

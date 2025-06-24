@@ -9,9 +9,9 @@ variable "droplet_name" {
 }
 
 variable "droplet_image" {
-  description = "The image of the droplet (must be available in the region). Default: ubuntu-1vcpu-512mb.rev1"
+  description = "The image of the droplet (must be available in the region). Default: ubuntu-24-04.rev1"
   type        = string
-  default     = "ubuntu-1vcpu-512mb.rev1"
+  default     = "ubuntu-24-04.rev1"
 }
 
 variable "droplet_region" {
@@ -134,4 +134,22 @@ variable "app_cname_records" {
   description = "List with CNAME records for droplet"
   type        = list(string)
   default     = []
+}
+
+variable "dns_provider" {
+  description = "DNS provider to manage records for the droplet. Supported: 'digitalocean', 'cloudflare'. Default: 'digitalocean'"
+  type        = string
+  default     = "digitalocean"
+}
+
+variable "cloudflare_dns_settings" {
+  description = "Settings for all Cloudflare DNS records. Required if `dns_provider` is set to 'cloudflare'."
+  type = object({
+    proxied = bool
+    ttl     = number
+  })
+  default = {
+    proxied = true
+    ttl     = 3600
+  }
 }
