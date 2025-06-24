@@ -1,3 +1,40 @@
+# Terraform Setup Environment
+This module creates a droplet in DigitalOcean with the specified configurations and for the specified role.
+
+## Usage
+Module example:
+```hcl
+locals {
+  os_environment_variables = [
+    "HAPROXY_VERSION=2.6.2"
+  ]
+  os_commands = [
+    "sudo docker compose -f /opt/configurations/docker-compose.yml up -d --force-recreate --remove-orphans"
+  ]
+}
+
+module "proxy_server" {
+  source  = "app.terraform.io/<ORG_NAME>/environment/setup"
+  version = "1.0.0"
+
+  droplet_image               = "ubuntu-1vcpu-512mb"
+  droplet_size                = "s-1vcpu-512mb-10gb"
+  droplet_user                = "ubuntu"
+  droplet_provisioner_ssh_key = "remote-provisioner-ssh-key-name"
+  droplet_name                = "proxy-server"
+  droplet_tags                = ["ubuntu", "proxy"]
+  droplet_project             = "project-name"
+  droplet_dns_zone            = "example.com"
+  droplet_reserved_ip         = true
+  os_environment_variables    = local.os_environment_variables
+  os_commands                 = local.os_commands
+  os_swap_size                = "2"
+  dns_provider                = "digitalocean"
+}
+```
+All files in the `configurations` directory will be copied to the `/opt/configurations` directory on the created server.
+
+
 ## Requirements
 
 | Name | Version |
