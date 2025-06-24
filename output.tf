@@ -26,6 +26,8 @@ output "droplet_user" {
 output "droplet_dns" {
   description = "Droplet DNS record info for DigitalOcean provider, if applicable."
   value = {
+    # Determines whether to include DNS record information in the output. This condition
+    # typically depends on whether DNS records are configured for the droplet.
     dns_record = local.dns_record_condition ? try(digitalocean_record.this[0].fqdn, "") : ""
     cname_records = (
       length(var.app_cname_records) > 0 &&
