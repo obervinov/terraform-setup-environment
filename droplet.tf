@@ -1,8 +1,8 @@
-# Provising resources in DigitalOcean
+# Provisioning resources in DigitalOcean
 # Droplet, reserved IP, DNS record, volume, volume snapshot
 resource "digitalocean_droplet" "this" {
   name          = "${var.droplet_name}-${var.droplet_region}"
-  image         = data.digitalocean_droplet_snapshot.this.id
+  image         = local.image_id
   region        = var.droplet_region
   size          = var.droplet_size
   backups       = var.droplet_backups

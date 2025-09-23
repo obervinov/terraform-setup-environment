@@ -1,6 +1,8 @@
-# Disabled CloudInit APT update and upgrade to avoid error
+# Disabled CloudInit APT update and upgrade to avoid error (reproducible on DO Ubuntu 24.04 image. Will be debugged later):
 # "Failed to update package using apt: Unexpected error while running command. Command: ['eatmydata', 'apt-get', '--option=Dpkg::Options::=--force-confold', '--option=Dpkg::options::=--force-unsafe-io', '--assume-yes', '--quiet', 'update'] Exit code: 100 Reason: - Stdout: - Stderr: -"
 locals {
+  snapshot_id             = length(data.digitalocean_droplet_snapshot.this) > 0 ? data.digitalocean_droplet_snapshot.this[0].id : null
+  image_id                = var.droplet_image_id != null ? var.droplet_image_id : local.snapshot_id
   remote_provisioner_host = var.droplet_provisioner_external_ip ? digitalocean_droplet.this.ipv4_address : digitalocean_droplet.this.ipv4_address_private
   default_environment_variables = [
     "DROPLET_INTERNAL_IP=${digitalocean_droplet.this.ipv4_address_private}",
@@ -66,6 +68,7 @@ data "digitalocean_vpc" "this" {
 }
 
 data "digitalocean_droplet_snapshot" "this" {
+  count       = var.droplet_image_id != null ? 1 : 0
   name        = var.droplet_image
   region      = var.droplet_region
   most_recent = true
