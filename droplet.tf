@@ -32,7 +32,7 @@ resource "digitalocean_volume" "this" {
   count = var.droplet_volume_size > 0 ? 1 : 0
 
   region                  = digitalocean_droplet.this.region
-  name                    = "${var.droplet_name}-${var.droplet_region}-volume"
+  name                    = "${local.droplet_name}-${var.droplet_region}-volume"
   size                    = var.droplet_volume_size
   initial_filesystem_type = "ext4"
   description             = "Additional volume for ${digitalocean_droplet.this.name}"
@@ -50,6 +50,6 @@ resource "digitalocean_volume_attachment" "this" {
 resource "digitalocean_volume_snapshot" "this" {
   count = var.droplet_volume_size > 0 ? 1 : 0
 
-  name      = "${var.droplet_name}--${var.droplet_region}-volume-snapshot"
+  name      = "${local.droplet_name}--${var.droplet_region}-volume-snapshot"
   volume_id = digitalocean_volume.this[count.index].id
 }

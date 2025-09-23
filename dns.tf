@@ -3,7 +3,7 @@ resource "digitalocean_record" "this" {
 
   domain = var.droplet_dns_record ? data.digitalocean_domain.this[0].id : null
   type   = "A"
-  name   = var.droplet_name
+  name   = local.droplet_name
   value  = var.droplet_reserved_ip ? digitalocean_reserved_ip.this[0].ip_address : digitalocean_droplet.this.ipv4_address
 }
 
@@ -22,9 +22,9 @@ resource "cloudflare_dns_record" "this" {
   count = var.droplet_dns_record && var.dns_provider == "cloudflare" ? 1 : 0
 
   zone_id = data.cloudflare_zone.this[count.index].zone_id
-  name    = "${var.droplet_name}.${data.cloudflare_zone.this[count.index].name}"
+  name    = "${local.droplet_name}.${data.cloudflare_zone.this[count.index].name}"
   type    = "A"
-  comment = "A record for the DigitalOcean droplet ${var.droplet_name}"
+  comment = "A record for the DigitalOcean droplet ${local.droplet_name}"
   content = var.droplet_reserved_ip ? digitalocean_reserved_ip.this[0].ip_address : digitalocean_droplet.this.ipv4_address
   proxied = var.cloudflare_dns_settings.proxied
   ttl     = var.cloudflare_dns_settings.proxied ? 1 : var.cloudflare_dns_settings.ttl
@@ -47,7 +47,7 @@ resource "cloudflare_dns_record" "additional" {
   zone_id = data.cloudflare_zone.this[0].zone_id
   name    = each.value
   type    = "CNAME"
-  comment = "CNAME record for the DigitalOcean droplet ${var.droplet_name}"
+  comment = "CNAME record for the DigitalOcean droplet ${local.droplet_name}"
   content = length(cloudflare_dns_record.this) > 0 ? "${data.cloudflare_dns_record.this[0].name}." : null
   proxied = var.cloudflare_dns_settings.proxied
   ttl     = var.cloudflare_dns_settings.proxied ? 1 : var.cloudflare_dns_settings.ttl
