@@ -6,6 +6,7 @@ variable "droplet_user" {
 variable "droplet_name" {
   description = "The name of the droplet (must be unique)"
   type        = string
+  default     = null
 }
 
 variable "droplet_name_override" {
