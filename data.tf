@@ -68,7 +68,7 @@ data "digitalocean_vpc" "this" {
 }
 
 data "digitalocean_droplet_snapshot" "this" {
-  count       = var.droplet_image_id != null ? 1 : 0
+  count       = var.droplet_image_id == null ? 1 : 0
   name        = var.droplet_image
   region      = var.droplet_region
   most_recent = true
