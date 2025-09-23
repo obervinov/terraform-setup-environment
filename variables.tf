@@ -21,7 +21,7 @@ variable "droplet_image" {
 }
 
 variable "droplet_image_id" {
-  description = "The image ID of the droplet (if you want to use a specific image ID instead of automatic resolving from the image slug). Conflicts with `droplet_image`, this one has higher priority. Default: null"
+  description = "The image ID of the droplet (if you want to use a specific image ID instead of automatic resolving from the image slug). Takes priority over `droplet_image` when provided. Default: null"
   type        = string
   default     = null
 }
