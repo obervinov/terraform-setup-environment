@@ -8,6 +8,12 @@ variable "droplet_name" {
   type        = string
 }
 
+variable "droplet_name_override" {
+  description = "Override for droplet name (if you want to use a specific name format, e.g. without region suffix). Temporary parameter for compatibility with existing setups, will be removed in future releases. Default: null"
+  type        = string
+  default     = null
+}
+
 variable "droplet_image" {
   description = "The image slug of the droplet (must be available in the region). Default: 'ubuntu-22-04-x64' from public catalog"
   type        = string
@@ -80,6 +86,12 @@ variable "droplet_do_monitoring" {
 variable "droplet_provisioner_ssh_key" {
   description = "Private key for provisioner connection to droplet (must be base64 encoded)"
   type        = string
+}
+
+variable "droplet_provisioner_ssh_key_name" {
+  description = "Name of the SSH key in DigitalOcean for provisioner connection to droplet to execute remote-exec. Default: 'terraform'"
+  type        = string
+  default     = "terraform"
 }
 
 variable "droplet_provisioner_external_ip" {

@@ -1,7 +1,7 @@
 # Provisioning resources in DigitalOcean
 # Droplet, reserved IP, DNS record, volume, volume snapshot
 resource "digitalocean_droplet" "this" {
-  name          = "${var.droplet_name}-${var.droplet_region}"
+  name          = local.droplet_name
   image         = local.image_id
   region        = var.droplet_region
   size          = var.droplet_size
@@ -11,10 +11,7 @@ resource "digitalocean_droplet" "this" {
   vpc_uuid      = data.digitalocean_vpc.this.id
   tags          = var.droplet_tags
   user_data     = local.user_data
-  ssh_keys = [
-    data.digitalocean_ssh_key.user.id,
-    data.digitalocean_ssh_key.remote_provisioner.id
-  ]
+  ssh_keys      = local.ssh_keys
 }
 
 resource "digitalocean_project_resources" "this" {

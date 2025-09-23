@@ -1,19 +1,29 @@
 # Disabled CloudInit APT update and upgrade to avoid error (reproducible on DO Ubuntu 24.04 image. Will be debugged later):
 # "Failed to update package using apt: Unexpected error while running command. Command: ['eatmydata', 'apt-get', '--option=Dpkg::Options::=--force-confold', '--option=Dpkg::options::=--force-unsafe-io', '--assume-yes', '--quiet', 'update'] Exit code: 100 Reason: - Stdout: - Stderr: -"
 locals {
+  # Legacy format of droplet name with region suffix to keep compatibility with existing setups. Will be changed in future releases to just `var.droplet_name`
+  droplet_name            = var.droplet_name_override != null ? var.droplet_name_override : "${var.droplet_name}-${var.droplet_region}"
   snapshot_id             = length(data.digitalocean_droplet_snapshot.this) > 0 ? data.digitalocean_droplet_snapshot.this[0].id : null
   image_id                = var.droplet_image_id != null ? var.droplet_image_id : local.snapshot_id
   remote_provisioner_host = var.droplet_provisioner_external_ip ? digitalocean_droplet.this.ipv4_address : digitalocean_droplet.this.ipv4_address_private
+
+  ssh_keys = [
+    data.digitalocean_ssh_key.user.id,
+    data.digitalocean_ssh_key.remote_provisioner.id
+  ]
+
   default_environment_variables = [
     "DROPLET_INTERNAL_IP=${digitalocean_droplet.this.ipv4_address_private}",
     "DROPLET_EXTERNAL_IP=${digitalocean_droplet.this.ipv4_address}",
   ]
+
   default_commands = [
     "sudo DEBIAN_FRONTEND=noninteractive apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y",
     "sudo mkdir -p ${var.app_data}/${var.app_configurations}",
     "sudo chown ${var.droplet_user}:terraform ${var.app_data}/${var.app_configurations}",
     "sudo chmod 775 ${var.app_data}/${var.app_configurations}",
   ]
+
   user_data = <<EOF
 #cloud-config
 
@@ -51,7 +61,7 @@ data "digitalocean_ssh_key" "user" {
 }
 
 data "digitalocean_ssh_key" "remote_provisioner" {
-  name = "terraform"
+  name = var.droplet_provisioner_ssh_key_name
 }
 
 data "digitalocean_project" "this" {
@@ -60,7 +70,8 @@ data "digitalocean_project" "this" {
 
 data "digitalocean_domain" "this" {
   count = var.dns_provider == "digitalocean" ? 1 : 0
-  name  = var.droplet_dns_zone
+
+  name = var.droplet_dns_zone
 }
 
 data "digitalocean_vpc" "this" {
@@ -68,7 +79,8 @@ data "digitalocean_vpc" "this" {
 }
 
 data "digitalocean_droplet_snapshot" "this" {
-  count       = var.droplet_image_id == null ? 1 : 0
+  count = var.droplet_image_id == null ? 1 : 0
+
   name        = var.droplet_image
   region      = var.droplet_region
   most_recent = true
@@ -76,10 +88,12 @@ data "digitalocean_droplet_snapshot" "this" {
 
 data "cloudflare_zones" "this" {
   count = var.droplet_dns_record && var.dns_provider == "cloudflare" ? 1 : 0
-  name  = var.droplet_dns_zone
+
+  name = var.droplet_dns_zone
 }
 
 data "cloudflare_zone" "this" {
-  count   = length(data.cloudflare_zones.this)
+  count = length(data.cloudflare_zones.this)
+
   zone_id = length(data.cloudflare_zones.this[count.index].result) > 0 ? data.cloudflare_zones.this[count.index].result[0].id : null
 }
