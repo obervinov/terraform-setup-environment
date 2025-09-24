@@ -48,7 +48,7 @@ resource "cloudflare_dns_record" "additional" {
   name    = each.value
   type    = "CNAME"
   comment = "CNAME record for the DigitalOcean droplet ${local.droplet_name}"
-  content = length(cloudflare_dns_record.this) > 0 ? "${data.cloudflare_dns_record.this[0].name}." : null
+  content = length(cloudflare_dns_record.this) > 0 ? "${data.cloudflare_dns_record.this[0].name}" : null
   proxied = var.cloudflare_dns_settings.proxied
   ttl     = var.cloudflare_dns_settings.proxied ? 1 : var.cloudflare_dns_settings.ttl
 }
