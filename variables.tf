@@ -6,6 +6,7 @@ variable "droplet_user" {
 variable "droplet_name" {
   description = "The name of the droplet (must be unique)"
   type        = string
+  # Null is temporary default to avoid breaking changes for existing setups, will be changed in future releases after removing `droplet_name_override`
   default     = null
 }
 

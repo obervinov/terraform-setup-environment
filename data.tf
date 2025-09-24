@@ -20,7 +20,7 @@ locals {
   default_commands = [
     "sudo DEBIAN_FRONTEND=noninteractive apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y",
     "sudo mkdir -p ${var.app_data}/${var.app_configurations}",
-    "sudo chown ${var.droplet_user}:terraform ${var.app_data}/${var.app_configurations}",
+    "sudo chown ${var.droplet_user}:${var.droplet_provisioner_ssh_key_name} ${var.app_data}/${var.app_configurations}",
     "sudo chmod 775 ${var.app_data}/${var.app_configurations}",
   ]
 
@@ -41,7 +41,7 @@ users:
       - ALL=(ALL) NOPASSWD:ALL
     ssh_authorized_keys:
       - ${data.digitalocean_ssh_key.user.public_key}
-  - name: terraform
+  - name: ${var.droplet_provisioner_ssh_key_name}
     groups:
       - sudo
     sudo:
