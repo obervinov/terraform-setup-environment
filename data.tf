@@ -3,8 +3,12 @@
 locals {
   # Legacy format of droplet name with region suffix to keep compatibility with existing setups. Will be changed in future releases to just `var.droplet_name`
   droplet_name            = var.droplet_name_override != null ? var.droplet_name_override : "${var.droplet_name}-${var.droplet_region}"
+  # Complicated logic to resolve image ID from slug or snapshot name to keep compatibility with existing setups. Will be simplified in future releases to just use `var.droplet_image` (slug or ID).
+  # Resolve image ID from slug if image ID is not provided (public or private images)
   snapshot_id             = length(data.digitalocean_droplet_snapshot.this) > 0 ? data.digitalocean_droplet_snapshot.this[0].id : null
-  image_id                = var.droplet_image_id != null ? var.droplet_image_id : local.snapshot_id
+  # Directly use provided image ID if available. Snapshot ID if not. Otherwise use default image slug from variable.
+  image_id                = var.droplet_image_id != null ? var.droplet_image_id : (local.snapshot_id != null ? local.snapshot_id : var.droplet_image)  
+
   remote_provisioner_host = var.droplet_provisioner_external_ip ? digitalocean_droplet.this.ipv4_address : digitalocean_droplet.this.ipv4_address_private
 
   ssh_keys = [
@@ -79,7 +83,7 @@ data "digitalocean_vpc" "this" {
 }
 
 data "digitalocean_droplet_snapshot" "this" {
-  count = var.droplet_image_id == null ? 1 : 0
+  count = var.droplet_image_id == null && var.droplet_image != null && var.droplet_image != "" ? 1 : 0
 
   name        = var.droplet_image
   region      = var.droplet_region
