@@ -2,12 +2,16 @@
 # "Failed to update package using apt: Unexpected error while running command. Command: ['eatmydata', 'apt-get', '--option=Dpkg::Options::=--force-confold', '--option=Dpkg::options::=--force-unsafe-io', '--assume-yes', '--quiet', 'update'] Exit code: 100 Reason: - Stdout: - Stderr: -"
 locals {
   # Legacy format of droplet name with region suffix to keep compatibility with existing setups. Will be changed in future releases to just `var.droplet_name`
-  droplet_name            = var.droplet_name_override != null ? var.droplet_name_override : "${var.droplet_name}-${var.droplet_region}"
-  # Complicated logic to resolve image ID from slug or snapshot name to keep compatibility with existing setups. Will be simplified in future releases to just use `var.droplet_image` (slug or ID).
-  # Resolve image ID from slug if image ID is not provided (public or private images)
-  snapshot_id             = length(data.digitalocean_droplet_snapshot.this) > 0 ? data.digitalocean_droplet_snapshot.this[0].id : null
-  # Directly use provided image ID if available. Snapshot ID if not. Otherwise use default image slug from variable.
-  image_id                = var.droplet_image_id != null ? var.droplet_image_id : (local.snapshot_id != null ? local.snapshot_id : var.droplet_image)  
+  droplet_name = var.droplet_name_override != null ? var.droplet_name_override : "${var.droplet_name}-${var.droplet_region}"
+
+  # Determine if the provided image is numeric ID or slug (it's necessarily to resolve snapshots by name, direct slug of custom snapshot is not supported in digitalocean_droplet resource) 
+  input_image_is_numeric = can(tonumber(var.droplet_image))
+  input_image_id         = local.input_image_is_numeric ? tonumber(var.droplet_image) : null
+  input_image_slug       = !local.input_image_is_numeric ? var.droplet_image : null
+  # Final image ID to use for the droplet (either provided directly or resolved from slug or snapshot)
+  image_id = local.input_image_id != null ? local.input_image_id : (
+    length(data.digitalocean_droplet_snapshot.this) > 0 ? data.digitalocean_droplet_snapshot.this[0].id : null
+  )
 
   remote_provisioner_host = var.droplet_provisioner_external_ip ? digitalocean_droplet.this.ipv4_address : digitalocean_droplet.this.ipv4_address_private
 
@@ -83,9 +87,9 @@ data "digitalocean_vpc" "this" {
 }
 
 data "digitalocean_droplet_snapshot" "this" {
-  count = var.droplet_image_id == null && var.droplet_image != null && var.droplet_image != "" ? 1 : 0
+  count = local.input_image_slug != null ? 1 : 0
 
-  name        = var.droplet_image
+  name        = local.input_image_slug
   region      = var.droplet_region
   most_recent = true
 }

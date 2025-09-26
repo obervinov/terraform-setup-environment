@@ -7,7 +7,7 @@ variable "droplet_name" {
   description = "The name of the droplet (must be unique)"
   type        = string
   # Null is temporary default to avoid breaking changes for existing setups, will be changed in future releases after removing `droplet_name_override`
-  default     = null
+  default = null
 }
 
 variable "droplet_name_override" {
@@ -17,15 +17,9 @@ variable "droplet_name_override" {
 }
 
 variable "droplet_image" {
-  description = "The image slug of the droplet (must be available in the region). Default: 'ubuntu-22-04-x64' from public catalog"
-  type        = string
+  description = "The image slug or snapshot name or numeric ID for the droplet (must be available in the region). Examples: 'ubuntu-22-04-x64', 'my-custom-snapshot', '12345678'"
+  type        = any
   default     = "ubuntu-22-04-x64"
-}
-
-variable "droplet_image_id" {
-  description = "The image ID of the droplet (if you want to use a specific image ID instead of automatic resolving from the image slug). Takes priority over `droplet_image` when provided. Default: null"
-  type        = string
-  default     = null
 }
 
 variable "droplet_region" {
