@@ -7,7 +7,7 @@ resource "null_resource" "cloudinit" {
 
   connection {
     host        = local.remote_provisioner_host
-    user        = "terraform"
+    user        = local.remote_provisioner_user
     type        = "ssh"
     agent       = false
     timeout     = "3m"
@@ -34,7 +34,7 @@ resource "null_resource" "etc_hosts" {
 
   connection {
     host        = local.remote_provisioner_host
-    user        = "terraform"
+    user        = local.remote_provisioner_user
     type        = "ssh"
     agent       = false
     timeout     = "3m"
@@ -60,7 +60,7 @@ resource "null_resource" "swap" {
 
   connection {
     host        = local.remote_provisioner_host
-    user        = "terraform"
+    user        = local.remote_provisioner_user
     type        = "ssh"
     agent       = false
     timeout     = "3m"
@@ -91,7 +91,7 @@ resource "null_resource" "environment_variables" {
 
   connection {
     host        = local.remote_provisioner_host
-    user        = "terraform"
+    user        = local.remote_provisioner_user
     type        = "ssh"
     agent       = false
     timeout     = "3m"
@@ -118,7 +118,7 @@ resource "null_resource" "files" {
 
   connection {
     host        = local.remote_provisioner_host
-    user        = "terraform"
+    user        = local.remote_provisioner_user
     type        = "ssh"
     agent       = false
     timeout     = "3m"
@@ -148,7 +148,7 @@ resource "null_resource" "additional_commands" {
 
   connection {
     host        = local.remote_provisioner_host
-    user        = "terraform"
+    user        = local.remote_provisioner_user
     type        = "ssh"
     agent       = false
     timeout     = "3m"
@@ -168,7 +168,7 @@ resource "null_resource" "volume_mount" {
 
   connection {
     host        = local.remote_provisioner_host
-    user        = "terraform"
+    user        = local.remote_provisioner_user
     type        = "ssh"
     agent       = false
     timeout     = "3m"

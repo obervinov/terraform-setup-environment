@@ -14,6 +14,8 @@ locals {
   )
 
   remote_provisioner_host = var.droplet_provisioner_external_ip ? digitalocean_droplet.this.ipv4_address : digitalocean_droplet.this.ipv4_address_private
+  # Same with ssh public key name in DigitalOcean for provisioner connection
+  remote_provisioner_user = var.droplet_provisioner_ssh_key_name
 
   ssh_keys = [
     data.digitalocean_ssh_key.user.id,

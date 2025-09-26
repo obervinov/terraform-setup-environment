@@ -17,7 +17,7 @@ variable "droplet_name_override" {
 }
 
 variable "droplet_image" {
-  description = "The image slug or snapshot name or numeric ID for the droplet (must be available in the region). Examples: 'ubuntu-22-04-x64', 'my-custom-snapshot', '12345678'"
+  description = "The image slug or snapshot name or numeric ID for the droplet (must be available in the region). Examples: 'ubuntu-22-04-x64', 'my-custom-snapshot', '12345678'. Default: 'ubuntu-22-04-x64'"
   type        = any
   default     = "ubuntu-22-04-x64"
 }
@@ -115,7 +115,7 @@ variable "os_commands" {
 }
 
 variable "os_environment_variables" {
-  description = "List with environmetn variables for server"
+  description = "List with environment variables for server"
   type        = list(any)
   default     = []
 }
