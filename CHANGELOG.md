@@ -12,6 +12,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 * added an additional parameter `droplet_provisioner_ssh_key_name` to specify the name of the SSH key in DigitalOcean for provisioner connection to droplet to execute remote-exec (default: "terraform")
 #### 💥 Breaking Changes
 * default value of the `droplet_image` variable changed from `ubuntu-24-04.rev1` to `ubuntu-22-04-x64` from public catalog (to avoid confusion with private snapshots that may not be available for all users)
+#### 🐛 Bug Fixes
+* fix a cycle recreation issue with Cloudflare CNAME records
 
 
 ## v2.0.1 - 2025-06-24
