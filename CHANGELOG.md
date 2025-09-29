@@ -3,6 +3,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## v2.1.0 - 2025-09-29
+### What's Changed
+**Full Changelog**: https://github.com/obervinov/terraform-setup-environment/compare/v2.0.1...v2.1.0 by @obervinov
+#### 🚀 Features
+* the input for the `droplet_image` variable was changed to support both image slugs (like `ubuntu-22-04-x64`), snapshot names (like `my-custom-snapshot`) and numeric image IDs (like `12345678`) directly. The module will automatically resolve the correct image ID to use for the droplet creation. This simplifies the configuration and solves issues with doesn't exist snapshots in certain regions.
+* added an additional parameter `droplet_name_override` to support custom droplet name formats (useful for cases with imported legacy droplets that do not follow the default naming convention with region suffix). This is a temporary parameter for compatibility with existing setups and will be removed in next major releases.
+* added an additional parameter `droplet_provisioner_ssh_key_name` to specify the name of the SSH key in DigitalOcean for provisioner connection to droplet to execute remote-exec (default: "terraform")
+#### 💥 Breaking Changes
+* default value of the `droplet_image` variable changed from `ubuntu-24-04.rev1` to `ubuntu-22-04-x64` from public catalog (to avoid confusion with private snapshots that may not be available for all users)
+#### 🐛 Bug Fixes
+* fix a cycle recreation issue with Cloudflare CNAME records
+
+
 ## v2.0.1 - 2025-06-24
 ### What's Changed
 **Full Changelog**: https://github.com/obervinov/terraform-setup-environment/compare/v2.0.0...v2.0.1 by @obervinov

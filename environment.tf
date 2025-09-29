@@ -7,7 +7,7 @@ resource "null_resource" "cloudinit" {
 
   connection {
     host        = local.remote_provisioner_host
-    user        = "terraform"
+    user        = local.remote_provisioner_user
     type        = "ssh"
     agent       = false
     timeout     = "3m"
@@ -34,7 +34,7 @@ resource "null_resource" "etc_hosts" {
 
   connection {
     host        = local.remote_provisioner_host
-    user        = "terraform"
+    user        = local.remote_provisioner_user
     type        = "ssh"
     agent       = false
     timeout     = "3m"
@@ -60,7 +60,7 @@ resource "null_resource" "swap" {
 
   connection {
     host        = local.remote_provisioner_host
-    user        = "terraform"
+    user        = local.remote_provisioner_user
     type        = "ssh"
     agent       = false
     timeout     = "3m"
@@ -91,7 +91,7 @@ resource "null_resource" "environment_variables" {
 
   connection {
     host        = local.remote_provisioner_host
-    user        = "terraform"
+    user        = local.remote_provisioner_user
     type        = "ssh"
     agent       = false
     timeout     = "3m"
@@ -118,7 +118,7 @@ resource "null_resource" "files" {
 
   connection {
     host        = local.remote_provisioner_host
-    user        = "terraform"
+    user        = local.remote_provisioner_user
     type        = "ssh"
     agent       = false
     timeout     = "3m"
@@ -148,7 +148,7 @@ resource "null_resource" "additional_commands" {
 
   connection {
     host        = local.remote_provisioner_host
-    user        = "terraform"
+    user        = local.remote_provisioner_user
     type        = "ssh"
     agent       = false
     timeout     = "3m"
@@ -168,7 +168,7 @@ resource "null_resource" "volume_mount" {
 
   connection {
     host        = local.remote_provisioner_host
-    user        = "terraform"
+    user        = local.remote_provisioner_user
     type        = "ssh"
     agent       = false
     timeout     = "3m"
@@ -176,8 +176,8 @@ resource "null_resource" "volume_mount" {
   }
   provisioner "remote-exec" {
     inline = [
-      "sudo mkdir -p /mnt/${var.droplet_name}-${var.droplet_region}-volume",
-      "new_line='/mnt/${var.droplet_name}-${var.droplet_region}-volume /dev/sda ext4 defaults,nofail,discard,noatime 0 2' && grep -q $new_line /etc/fstab || echo $new_line | sudo tee -a /etc/fstab",
+      "sudo mkdir -p /mnt/${local.droplet_name}-${var.droplet_region}-volume",
+      "new_line='/mnt/${local.droplet_name}-${var.droplet_region}-volume /dev/sda ext4 defaults,nofail,discard,noatime 0 2' && grep -q $new_line /etc/fstab || echo $new_line | sudo tee -a /etc/fstab",
       "systemctl daemon-reload",
       "sudo mount -a"
     ]

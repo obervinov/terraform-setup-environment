@@ -14,8 +14,7 @@ locals {
 }
 
 module "proxy_server" {
-  source  = "app.terraform.io/<ORG_NAME>/environment/setup"
-  version = "1.0.0"
+  source = "github.com/obervinov/terraform-setup-environment?ref=v2.1.0"
 
   droplet_image               = "ubuntu-1vcpu-512mb"
   droplet_size                = "s-1vcpu-512mb-10gb"
@@ -28,7 +27,7 @@ module "proxy_server" {
   droplet_reserved_ip         = true
   os_environment_variables    = local.os_environment_variables
   os_commands                 = local.os_commands
-  os_swap_size                = "2"
+  os_swap_size                = "1"
   dns_provider                = "digitalocean"
 }
 ```
@@ -100,11 +99,13 @@ No modules.
 | <a name="input_droplet_dns_zone"></a> [droplet\_dns\_zone](#input\_droplet\_dns\_zone) | Name of the domain zone to create an external dns record for this droplet | `string` | n/a | yes |
 | <a name="input_droplet_do_agent"></a> [droplet\_do\_agent](#input\_droplet\_do\_agent) | Enable DigitalOcean agent for droplet (for monitoring and backups) | `bool` | `true` | no |
 | <a name="input_droplet_do_monitoring"></a> [droplet\_do\_monitoring](#input\_droplet\_do\_monitoring) | Enable monitoring for droplet (for graphs and alerts) | `bool` | `true` | no |
-| <a name="input_droplet_image"></a> [droplet\_image](#input\_droplet\_image) | The image of the droplet (must be available in the region). Default: ubuntu-24-04.rev1 | `string` | `"ubuntu-24-04.rev1"` | no |
-| <a name="input_droplet_name"></a> [droplet\_name](#input\_droplet\_name) | The name of the droplet (must be unique) | `string` | n/a | yes |
+| <a name="input_droplet_image"></a> [droplet\_image](#input\_droplet\_image) | The image slug or snapshot name or numeric ID for the droplet (must be available in the region). Examples: 'ubuntu-22-04-x64', 'my-custom-snapshot', '12345678' | `any` | `"ubuntu-22-04-x64"` | no |
+| <a name="input_droplet_name"></a> [droplet\_name](#input\_droplet\_name) | The name of the droplet (must be unique) | `string` | `null` | no |
+| <a name="input_droplet_name_override"></a> [droplet\_name\_override](#input\_droplet\_name\_override) | Override for droplet name (if you want to use a specific name format, e.g. without region suffix). Temporary parameter for compatibility with existing setups, will be removed in future releases. Default: null | `string` | `null` | no |
 | <a name="input_droplet_project"></a> [droplet\_project](#input\_droplet\_project) | The target project for the droplet | `string` | n/a | yes |
 | <a name="input_droplet_provisioner_external_ip"></a> [droplet\_provisioner\_external\_ip](#input\_droplet\_provisioner\_external\_ip) | External IP for provisioner connection to droplet | `bool` | `false` | no |
 | <a name="input_droplet_provisioner_ssh_key"></a> [droplet\_provisioner\_ssh\_key](#input\_droplet\_provisioner\_ssh\_key) | Private key for provisioner connection to droplet (must be base64 encoded) | `string` | n/a | yes |
+| <a name="input_droplet_provisioner_ssh_key_name"></a> [droplet\_provisioner\_ssh\_key\_name](#input\_droplet\_provisioner\_ssh\_key\_name) | Name of the SSH key in DigitalOcean for provisioner connection to droplet to execute remote-exec. Default: 'terraform' | `string` | `"terraform"` | no |
 | <a name="input_droplet_region"></a> [droplet\_region](#input\_droplet\_region) | The region of the droplet (must be available) | `string` | `"ams3"` | no |
 | <a name="input_droplet_reserved_ip"></a> [droplet\_reserved\_ip](#input\_droplet\_reserved\_ip) | Link a reserved address to a droplet | `bool` | `false` | no |
 | <a name="input_droplet_size"></a> [droplet\_size](#input\_droplet\_size) | The size of the droplet (must be available in the region) | `string` | `"s-1vcpu-512mb-10gb"` | no |

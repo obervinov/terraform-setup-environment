@@ -6,12 +6,20 @@ variable "droplet_user" {
 variable "droplet_name" {
   description = "The name of the droplet (must be unique)"
   type        = string
+  # Null is temporary default to avoid breaking changes for existing setups, will be changed in future releases after removing `droplet_name_override`
+  default = null
+}
+
+variable "droplet_name_override" {
+  description = "Override for droplet name (if you want to use a specific name format, e.g. without region suffix). Temporary parameter for compatibility with existing setups, will be removed in future releases. Default: null"
+  type        = string
+  default     = null
 }
 
 variable "droplet_image" {
-  description = "The image of the droplet (must be available in the region). Default: ubuntu-24-04.rev1"
-  type        = string
-  default     = "ubuntu-24-04.rev1"
+  description = "The image slug or snapshot name or numeric ID for the droplet (must be available in the region). Examples: 'ubuntu-22-04-x64', 'my-custom-snapshot', '12345678'. Default: 'ubuntu-22-04-x64'"
+  type        = any
+  default     = "ubuntu-22-04-x64"
 }
 
 variable "droplet_region" {
@@ -76,6 +84,12 @@ variable "droplet_provisioner_ssh_key" {
   type        = string
 }
 
+variable "droplet_provisioner_ssh_key_name" {
+  description = "Name of the SSH key in DigitalOcean for provisioner connection to droplet to execute remote-exec. Default: 'terraform'"
+  type        = string
+  default     = "terraform"
+}
+
 variable "droplet_provisioner_external_ip" {
   description = "External IP for provisioner connection to droplet"
   type        = bool
@@ -101,7 +115,7 @@ variable "os_commands" {
 }
 
 variable "os_environment_variables" {
-  description = "List with environmetn variables for server"
+  description = "List with environment variables for server"
   type        = list(any)
   default     = []
 }
