@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## v2.2.0 - 2026-09-10
+### What's Changed
+#### 🚀 Features
+* `os_secrets_agent`: install [secrets-agent](https://github.com/obervinov/secrets-agent) on the droplet. It fetches a JSON object of variables from an authenticated HTTPS endpoint and applies them to `docker compose`, to systemd units through a drop-in, and to per-variable files for images that read `*_FILE`. The binary is downloaded from the pinned release on the host and verified against the `SHA256SUMS` published beside it, so a tampered or truncated download fails the apply instead of being installed. Nothing is vendored: this module carries the install, the upstream project carries the code. `default = null`, so no existing caller is affected.
+
 ## v2.1.0 - 2025-09-29
 ### What's Changed
 **Full Changelog**: https://github.com/obervinov/terraform-setup-environment/compare/v2.0.1...v2.1.0 by @obervinov

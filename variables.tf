@@ -167,3 +167,53 @@ variable "cloudflare_dns_settings" {
     ttl     = 3600
   }
 }
+
+variable "os_secrets_agent" {
+  description = "Install https://github.com/obervinov/secrets-agent on the droplet. It fetches a JSON object of variables from an authenticated HTTPS endpoint and applies them to docker compose, to systemd units through a drop-in, and to per-variable files for images that read *_FILE. Leave null to not install it."
+
+  type = object({
+    # Release tag to install, e.g. "v1.1.0". Pinned rather than latest: the binary is
+    # verified against the SHA256SUMS of this exact release.
+    version = string
+
+    url          = string
+    auth_headers = map(string)
+
+    # At least one consumer has to be configured. A host that only feeds systemd units
+    # needs no compose file, and the reverse.
+    compose_file = optional(string)
+    systemd_units = optional(list(object({
+      unit     = string
+      prefix   = string
+      env_file = optional(string)
+      group    = optional(string)
+    })), [])
+
+    interval     = optional(string, "*:0/15")
+    files_mode   = optional(string, "0644")
+    routed_files = optional(map(string), {})
+
+    # Values this module owns rather than the secret store: derived from resources
+    # terraform manages, plus non-secret ones a systemd unit cannot read from
+    # /etc/environment.
+    terraform_env = optional(map(string), {})
+  })
+
+  default   = null
+  sensitive = true
+
+  validation {
+    condition     = var.os_secrets_agent == null ? true : can(regex("^v[0-9]+\\.[0-9]+\\.[0-9]+$", var.os_secrets_agent.version))
+    error_message = "os_secrets_agent.version must be a release tag such as v1.1.0."
+  }
+
+  validation {
+    condition     = var.os_secrets_agent == null ? true : startswith(var.os_secrets_agent.url, "https://")
+    error_message = "os_secrets_agent.url must be https: the agent refuses to send its credential in cleartext."
+  }
+
+  validation {
+    condition     = var.os_secrets_agent == null ? true : (try(var.os_secrets_agent.compose_file, null) != null || length(var.os_secrets_agent.systemd_units) > 0)
+    error_message = "os_secrets_agent configures no consumer: set compose_file, systemd_units or both."
+  }
+}

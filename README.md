@@ -33,6 +33,57 @@ module "proxy_server" {
 ```
 All files in the `configurations` directory will be copied to the `/opt/configurations` directory on the created server.
 
+## Delivering secrets with secrets-agent
+`os_environment_variables` writes `/etc/environment`, which is mode 0644 and read by
+`pam_env` into every login session — so every value in it is in the environment of
+every process on the box. That is the wrong place for a secret.
+
+`os_secrets_agent` installs [secrets-agent](https://github.com/obervinov/secrets-agent)
+instead. The droplet fetches its variables from an authenticated HTTPS endpoint on a
+systemd timer and each consumer gets only its own:
+
+```hcl
+module "proxy_server" {
+  source = "github.com/obervinov/terraform-setup-environment?ref=v2.2.0"
+
+  # ...
+
+  os_secrets_agent = {
+    version      = "v1.1.0"
+    url          = "https://secrets.example.com/v1/env/proxy-server"
+    auth_headers = {
+      "CF-Access-Client-Id"     = var.ACCESS_CLIENT_ID
+      "CF-Access-Client-Secret" = var.ACCESS_CLIENT_SECRET
+    }
+
+    compose_file  = "/opt/configurations/docker-compose.yml"
+    systemd_units = [{ unit = "alloy.service", prefix = "ALLOY_", group = "alloy" }]
+  }
+}
+```
+
+- `compose_file` — variables are handed to `docker compose` in its process
+  environment, so `${VAR}` interpolation works with no file on disk to escape
+- `systemd_units` — each entry takes the variables matching its `prefix` and gets them
+  through `/etc/systemd/system/<unit>.d/10-secrets-agent.conf`, leaving whatever
+  conffile the package ships untouched. A unit not installed on the host is skipped
+- `routed_files` — `{"postgres_password" = "POSTGRES_PASSWORD"}` for images that take
+  `*_FILE` rather than a value
+- `terraform_env` — values this module owns rather than the store: anything derived
+  from a resource terraform manages. `DROPLET_INTERNAL_IP` and `DROPLET_EXTERNAL_IP`
+  are merged in automatically
+
+At least one of `compose_file` or `systemd_units` has to be set, or nothing consumes
+the variables and the apply fails on the validation rather than on the host.
+
+The binary is downloaded from the pinned release **on the droplet** and verified
+against the `SHA256SUMS` published beside it, so a tampered or truncated download
+fails the apply instead of being installed. `linux/amd64` and `linux/arm64` are
+selected by `uname -m`.
+
+The agent is run once synchronously during the apply, so a wrong credential or
+endpoint fails there rather than surfacing on a timer tick nobody is watching.
+
 
 ## Requirements
 
