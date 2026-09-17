@@ -14,21 +14,24 @@ locals {
 }
 
 module "proxy_server" {
-  source = "github.com/obervinov/terraform-setup-environment?ref=v2.1.0"
+  source = "github.com/obervinov/terraform-setup-environment?ref=v2.1.1"
 
-  droplet_image               = "ubuntu-1vcpu-512mb"
-  droplet_size                = "s-1vcpu-512mb-10gb"
-  droplet_user                = "ubuntu"
-  droplet_provisioner_ssh_key = "remote-provisioner-ssh-key-name"
-  droplet_name                = "proxy-server"
-  droplet_tags                = ["ubuntu", "proxy"]
-  droplet_project             = "project-name"
-  droplet_dns_zone            = "example.com"
-  droplet_reserved_ip         = true
-  os_environment_variables    = local.os_environment_variables
-  os_commands                 = local.os_commands
-  os_swap_size                = "1"
-  dns_provider                = "digitalocean"
+  droplet_image                    = "ubuntu-22-04-x64"
+  droplet_size                     = "s-1vcpu-512mb-10gb"
+  droplet_user                     = "ubuntu"
+  # The private key itself, base64 encoded — remote-exec connects with it.
+  droplet_provisioner_ssh_key      = base64encode(file("~/.ssh/terraform"))
+  # The name that same key is registered under in DigitalOcean.
+  droplet_provisioner_ssh_key_name = "terraform"
+  droplet_name                     = "proxy-server"
+  droplet_tags                     = ["ubuntu", "proxy"]
+  droplet_project                  = "project-name"
+  droplet_dns_zone                 = "example.com"
+  droplet_reserved_ip              = true
+  os_environment_variables         = local.os_environment_variables
+  os_commands                      = local.os_commands
+  os_swap_size                     = "1"
+  dns_provider                     = "digitalocean"
 }
 ```
 All files in the `configurations` directory will be copied to the `/opt/configurations` directory on the created server.
@@ -113,7 +116,7 @@ No modules.
 | <a name="input_droplet_user"></a> [droplet\_user](#input\_droplet\_user) | Name for creating a new user on the server (must be unique) | `string` | n/a | yes |
 | <a name="input_droplet_volume_size"></a> [droplet\_volume\_size](#input\_droplet\_volume\_size) | Additional volume size (if required) | `number` | `0` | no |
 | <a name="input_os_commands"></a> [os\_commands](#input\_os\_commands) | List of commands to execute custom remote-exec | `list(string)` | `null` | no |
-| <a name="input_os_environment_variables"></a> [os\_environment\_variables](#input\_os\_environment\_variables) | List with environmetn variables for server | `list(any)` | `[]` | no |
+| <a name="input_os_environment_variables"></a> [os\_environment\_variables](#input\_os\_environment\_variables) | List with environment variables for server | `list(any)` | `[]` | no |
 | <a name="input_os_hosts"></a> [os\_hosts](#input\_os\_hosts) | List with /etc/hosts | `list(string)` | `[]` | no |
 | <a name="input_os_packages"></a> [os\_packages](#input\_os\_packages) | List of packages to install | `list(string)` | `[]` | no |
 | <a name="input_os_swap_size"></a> [os\_swap\_size](#input\_os\_swap\_size) | Size of swap in GB | `number` | `0` | no |
