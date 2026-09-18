@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## v2.1.1 - 2026-09-17
+### What's Changed
+#### 🐛 Bug Fixes
+* `.github/workflows`: move the reusable workflows to `obervinov/_templates@v4.0.0`. Node 20 is removed from the Actions runner on 2026-09-23, and the pinned templates still called `actions/create-release` (`runs.using: node12`, archived) along with a set of `node20` actions — releases and checks in this repository would stop running.
+#### 📚 Documentation
+* `README.md`: fix the module usage example — it passed a size slug to `droplet_image` and an SSH key name to `droplet_provisioner_ssh_key`, which wants the base64-encoded private key — and pick up the `os_environment_variables` description typo already fixed in `variables.tf`.
+
+
 ## v2.1.0 - 2025-09-29
 ### What's Changed
 **Full Changelog**: https://github.com/obervinov/terraform-setup-environment/compare/v2.0.1...v2.1.0 by @obervinov

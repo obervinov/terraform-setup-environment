@@ -1,6 +1,14 @@
 ---
   name: PR
   
+  # pr.yaml opens or updates the pull request for the pushed branch, and
+  # terraform.yaml pushes the regenerated docs back. Declared here because a
+  # reusable workflow only ever gets what the caller grants, and because
+  # CodeQL flags a workflow that leaves the token at its default scope.
+  permissions:
+    contents: write
+    pull-requests: write
+  
   on:
     push:
       branches:
@@ -11,7 +19,7 @@
 
   jobs:    
     pr:
-      uses: obervinov/_templates/.github/workflows/pr.yaml@v2.1.1
+      uses: obervinov/_templates/.github/workflows/pr.yaml@v4.0.0
 
     terraform:
-      uses: obervinov/_templates/.github/workflows/terraform.yaml@v2.1.1
+      uses: obervinov/_templates/.github/workflows/terraform.yaml@v4.0.0

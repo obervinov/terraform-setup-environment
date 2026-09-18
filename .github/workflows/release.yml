@@ -1,6 +1,12 @@
 ---
   name: Release
   
+  # release.yaml now calls softprops/action-gh-release, which makes the REST
+  # call as the job itself. A reusable workflow cannot grant itself more than
+  # the caller has, so the permission is declared here.
+  permissions:
+    contents: write
+  
   on:
     pull_request:
       branches:
@@ -11,4 +17,4 @@
   jobs:
     create-release:
       if: github.event.pull_request.merged == true
-      uses: obervinov/_templates/.github/workflows/release.yaml@v2.1.1
+      uses: obervinov/_templates/.github/workflows/release.yaml@v4.0.0
