@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## v2.1.2 - 2026-10-09
+### What's Changed
+#### 📚 Documentation
+* `README.md`: pin the module source to the major tag (`?ref=v2`) instead of the exact release. The release workflow now moves `v2` to each new `v2.x.x`, so the line no longer has to be edited on every release — which is how it kept going stale. An exact pin still works against the per-release tag.
+#### 🐛 Bug Fixes
+* `.github/workflows`: move to `obervinov/_templates@v4.1.0`, whose release template points the major tag at each new release.
+
+
 ## v2.1.1 - 2026-09-17
 ### What's Changed
 #### 🐛 Bug Fixes

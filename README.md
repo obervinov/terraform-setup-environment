@@ -14,7 +14,7 @@ locals {
 }
 
 module "proxy_server" {
-  source = "github.com/obervinov/terraform-setup-environment?ref=v2.1.1"
+  source = "github.com/obervinov/terraform-setup-environment?ref=v2"
 
   droplet_image                    = "ubuntu-22-04-x64"
   droplet_size                     = "s-1vcpu-512mb-10gb"

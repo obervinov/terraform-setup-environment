@@ -17,4 +17,4 @@
   jobs:
     create-release:
       if: github.event.pull_request.merged == true
-      uses: obervinov/_templates/.github/workflows/release.yaml@v4.0.0
+      uses: obervinov/_templates/.github/workflows/release.yaml@v4.1.0
